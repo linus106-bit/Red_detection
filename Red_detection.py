@@ -18,14 +18,35 @@ class FindNonZero:
                     y_axis = np.append(y_axis,j)
                 else:
                     pass
-        print("size: ",count_img)
-        print("x_axis: \n", x_axis)
-        print("y_axis: \n", y_axis)
-        return count_img
+        return count_img, x_axis, y_axis
 
-    #def FindContour(size,):
-    #    if size > 10000:
 
+
+class Findcenter:
+    def wherecenter(height,width,img): #빨간색물체의 중심을 찾는 함수 
+        height_img = np.array([])
+        width_img = np.array([])
+        bottom_img = np.array([])
+        for i in range(height):
+            for j in range(width):
+                if img[int(i),int(j)]>0:
+                    height_img = np.append(height_img, i)
+                    width_img = np.append(width_img, j)
+                else:
+                    pass
+        for i in range(height_img[0],height):
+            if img[int(i),width_img[0]]>0:
+                pass
+            else:
+                bottom_img = np.append(bottom_img, i)
+        print("center's height: ",int((height_img[0]+bottom_img[0])/2))
+        print("center's width: ",width_img[0])
+        if width_img[0]>(width/2):
+            print("go left")
+        if width_img[0]<(width/2):
+            print("go right")
+        if width_img[0]==(width/2):
+            print("center")
 
 
 
@@ -45,13 +66,15 @@ while(cap.isOpened()):
         added_red = cv2.addWeighted(lower_red, 1.0 ,upper_red, 1.0, 0.0) # 합친거
         red = cv2.bitwise_and(frame, frame, mask= added_red) #마스크를 씌움
         h,s,v = cv2.split(red)  #채널 개수를 1개로 만듬
-        FindNonZero.AllNonZero(height,width,v)
-        cv2.imshow('red',red)
+        size_img, x_axis, y_axis = FindNonZero.AllNonZero(height,width,v)
+        if size_img > 6000:
+            print("size: ", size_img)
+            print("x_axis: \n", x_axis)
+            print("y_axis: \n", y_axis)
         cv2.imshow("new_red",v)
         k = cv2.waitKey(1) & 0xFF
         if k == 27 :
             break
         
 cap.release()
-
-cv2.destroyAllWindows()        
+cv2.destroyAllWindows()
